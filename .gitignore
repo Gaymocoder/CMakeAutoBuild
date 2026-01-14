@@ -1,0 +1,11 @@
+# Ignore object files, libs and executable files
+*.o
+*.dll
+*.so
+*.exe
+*.sh
+
+# Ignore bin, build and 3rdparty directories
+bin/
+build/
+3rdparty/

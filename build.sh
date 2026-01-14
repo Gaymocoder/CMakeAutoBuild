@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
 if ["$2" = "clear"]; then
-    rm -rf build
+    rm -rf ./build
+    rm -rf ./bin
 fi
 
 mkdir build
@@ -15,3 +16,5 @@ fi
 
 cmake --preset "$1" ..
 cmake --build .
+
+cd ..
