@@ -7,6 +7,16 @@
   },
   "configurePresets": [
     {
+      "name": "gcc",
+      "description": "GNU C Compiler for Unix Makefiles",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
       "name": "clang",
       "description": "Clang with default runtime",
       "binaryDir": "${sourceDir}/build",
