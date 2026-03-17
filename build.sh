@@ -1,27 +1,32 @@
 #!/usr/bin/env sh
 
+CLEAR_BUILD=0
+PRESET=""
+
 if [ "$1" = "clear" ]; then
+    CLEAR_BUILD=1
+elif [ "$2" = "clear" ]; then
+    CLEAR_BUILD=1
+    PRESET="$1"
+elif [ -n "$1" ]; then
+    PRESET="$1"
+fi
+
+if [ "$CLEAR_BUILD" = "1" ]; then
     rm -rf ./build
     rm -rf ./bin
     echo "Build directories cleared."
-    exit 0
-fi
-
-if [ "$2" = "clear" ]; then
-    rm -rf ./build
-    rm -rf ./bin
 fi
 
 mkdir build
 cd build
 
-if [ -z "$1" ]; then
+if [ -z "$PRESET" ]; then
     cmake ..
     cmake --build .
-    exit 0
+else
+    cmake --preset "$PRESET" ..
+    cmake --build .
 fi
-
-cmake --preset "$1" ..
-cmake --build .
 
 cd ..
