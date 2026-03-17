@@ -1,6 +1,13 @@
 #!/usr/bin/env sh
 
-if ["$2" = "clear"]; then
+if [ "$1" = "clear" ]; then
+    rm -rf ./build
+    rm -rf ./bin
+    echo "Build directories cleared."
+    exit 0
+fi
+
+if [ "$2" = "clear" ]; then
     rm -rf ./build
     rm -rf ./bin
 fi
@@ -8,7 +15,7 @@ fi
 mkdir build
 cd build
 
-if [-z  "$1"]; then
+if [ -z "$1" ]; then
     cmake ..
     cmake --build .
     exit 0

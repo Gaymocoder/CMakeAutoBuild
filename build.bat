@@ -1,5 +1,12 @@
 @echo off
 
+IF "%~1"=="clear" (
+    rd /s /q .\build
+    rd /s /q .\bin
+    echo Build directories cleared.
+    exit /b 0
+)
+
 IF "%~2"=="clear" (
     rd /s /q .\build
     rd /s /q .\bin
