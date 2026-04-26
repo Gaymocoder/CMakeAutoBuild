@@ -34,7 +34,7 @@ function(gcs_export_prepare target_name)
 endfunction()
 
 
-function(gcs_object_prepare target_name)
+function(gcs_binary_prepare target_name)
     target_include_directories("${target_name}" PUBLIC "${GCS_INCLUDE_DIRS}")
     target_compile_options("${target_name}" PRIVATE -Wall -Wextra -pedantic -O0 -g)
     if (MINGW)

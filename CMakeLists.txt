@@ -11,5 +11,5 @@ block()
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
     
-    add_subdirectory(hello)
+    add_subdirectory(Hello)
 endblock()

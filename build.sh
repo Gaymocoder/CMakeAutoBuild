@@ -18,7 +18,7 @@ if [ "$CLEAR_BUILD" = "1" ]; then
     echo "Build directories cleared."
 fi
 
-mkdir build
+mkdir -p build
 cd build
 
 if [ -z "$PRESET" ]; then
