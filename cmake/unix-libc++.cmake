@@ -1,0 +1,8 @@
+message(STATUS "Toolchain loaded: unix-libc++.cmake")
+if (LINUX)
+    if (NOT DEFINED LLVM_LIB_SET)
+        message(STATUS "-- Set libc++ runtime")
+        set(LLVM_LIB_SET 1)
+        set(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+    endif()
+endif()

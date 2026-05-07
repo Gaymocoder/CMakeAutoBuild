@@ -18,11 +18,22 @@
     },
     {
       "name": "clang",
-      "description": "Clang with default runtime",
+      "description": "Clang + LLVM libc++",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++"
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_TOOLCHAIN_FILE": "./cmake/unix-libc++.cmake"
+      }
+    },
+    {
+      "name": "clang-gcc",
+      "description": "Clang + GCC libstdc++",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_TOOLCHAIN_FILE": "./cmake/unix-libstdc++.cmake"
       }
     },
     {

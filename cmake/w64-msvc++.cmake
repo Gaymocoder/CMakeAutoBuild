@@ -1,7 +1,7 @@
 message(STATUS "Toolchain loaded: w64-msvc++.cmake")
 if (WIN32)
     if (NOT DEFINED MSVC_LIB_SET)
-        message(STATUS "Set MSVC++ runtime")
+        message(STATUS "-- Set MSVC++ runtime")
         set(MSVC_LIB_SET 1)
         set(CMAKE_C_FLAGS "--target=x86_64-windows-msvc ${CMAKE_C_FLAGS}")
         set(CMAKE_CXX_FLAGS "--target=x86_64-windows-msvc ${CMAKE_CXX_FLAGS}")

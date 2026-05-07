@@ -1,0 +1,8 @@
+message(STATUS "Toolchain loaded: unix-libstdc++.cmake")
+if (LINUX)
+    if (NOT DEFINED MINGW_LIB_SET)
+        message(STATUS "-- Set libstdc++ runtime")
+        set(MINGW_LIB_SET 1)
+        set(CMAKE_CXX_FLAGS "-stdlib=libstdc++ ${CMAKE_CXX_FLAGS}")
+    endif()
+endif()
