@@ -1,4 +1,8 @@
 message(STATUS "Toolchain loaded: w64-libstdc++.cmake")
+if(EXISTS "${CMAKE_SOURCE_DIR}/build/conan_toolchain.cmake")
+    include("${CMAKE_SOURCE_DIR}/build/conan_toolchain.cmake")
+endif()
+
 if (WIN32)
     if (NOT DEFINED MINGW_LIB_SET)
         message(STATUS "-- Set libstdc++ runtime")

@@ -9,3 +9,10 @@
 bin/
 build/
 3rdparty/
+
+# Ignore configured conan and CMake presets
+conan/
+CMakePresets.json
+
+# Don't ignore build-scripts
+!build.sh

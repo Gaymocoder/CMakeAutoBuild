@@ -1,4 +1,8 @@
 message(STATUS "Toolchain loaded: w64-msvc++.cmake")
+if(EXISTS "${CMAKE_SOURCE_DIR}/build/conan_toolchain.cmake")
+    include("${CMAKE_SOURCE_DIR}/build/conan_toolchain.cmake")
+endif()
+
 if (WIN32)
     if (NOT DEFINED MSVC_LIB_SET)
         message(STATUS "-- Set MSVC++ runtime")

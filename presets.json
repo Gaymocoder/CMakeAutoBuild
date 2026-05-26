@@ -1,0 +1,146 @@
+{
+    "clang": {
+        "cmake": {
+            "description": "Clang + LLVM libc++",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/unix-libc++.cmake"
+            }
+        },
+        "conan": {
+            "os": "Linux",
+            "arch": "x86_64",
+            "compiler": "clang",
+            "compiler.version": "17",
+            "compiler.libcxx": "libc++",
+            "build_type": "Release"
+        }
+    },
+    
+    "clang-gcc": {
+        "cmake": {
+            "description": "Clang + GCC libstdc++",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/unix-libstdc++.cmake"
+            }
+        },
+        "conan": {
+            "os": "Linux",
+            "arch": "x86_64",
+            "compiler": "clang",
+            "compiler.version": "17",
+            "compiler.libcxx": "libstdc++11",
+            "build_type": "Release"
+        }
+    },
+    
+    "clang-mingw": {
+        "cmake": {
+            "description": "Clang + MinGW libstdc++",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/w64-mingw32.cmake"
+            }
+        },
+        "conan": {
+            "os": "Windows",
+            "arch": "x86_64",
+            "compiler": "clang",
+            "compiler.version": "17",
+            "compiler.libcxx": "libstdc++11",
+            "build_type": "Release"
+        }
+    },
+    
+    "clang-msvc": {
+        "cmake": {
+            "description": "Clang + MSVC++",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/w64-msvc++.cmake"
+            }
+        },
+        "conan": {
+            "os": "Windows",
+            "arch": "x86_64",
+            "compiler": "clang",
+            "compiler.version": "17",
+            "compiler.runtime": "dynamic",
+            "compiler.runtime_type": "Release",
+            "build_type": "Release"
+        }
+    },
+
+    "gcc": {
+        "cmake": {
+            "description": "GNU C Compiler for Unix Makefiles",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_TOOLCHAIN_FILE": "./build/conan_toolchain.cmake"
+            }
+        },
+        "conan": {
+            "os": "Linux",
+            "arch": "x86_64",
+            "compiler": "gcc",
+            "compiler.version": "14",
+            "compiler.libcxx": "libstdc++11",
+            "build_type": "Release"
+        }
+    },
+    
+    "mingw32": {
+        "cmake": {
+            "description": "MinGW32",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_TOOLCHAIN_FILE": "./build/conan_toolchain.cmake"
+            }
+        },
+        "conan": {
+            "os": "Windows",
+            "arch": "x86_64",
+            "compiler": "gcc",
+            "compiler.version": "14",
+            "compiler.libcxx": "libstdc++11",
+            "build_type": "Release"
+        }
+    },
+    
+    "msvc": {
+        "cmake": {
+            "description": "MSVC++",
+            "generator": "Visual Studio",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "./build/conan_toolchain.cmake"
+            }
+        },
+        "conan": {
+            "os": "Windows",
+            "arch": "x86_64",
+            "compiler": "msvc",
+            "compiler.version": "193",
+            "compiler.runtime": "dynamic",
+            "compiler.runtime_type": "Release",
+            "build_type": "Release"
+        }
+    }
+}
