@@ -20,6 +20,31 @@ if !CLEAR_BUILD!==1 (
 )
 
 mkdir build
+
+REM —————————————————————— CONAN ——————————————————————
+
+if "!PRESET!"=="" (
+    set CONAN_PROFILE=default
+) else (
+    set CONAN_PROFILE=!PRESET!
+)
+
+set PROFILE_PATH=.\conan\profiles\!CONAN_PROFILE!
+
+if exist "!PROFILE_PATH!" (
+    set CONAN_PROFILE_ARG=!PROFILE_PATH!
+) else (
+    set CONAN_PROFILE_ARG=!CONAN_PROFILE!
+)
+
+conan install . --profile=!CONAN_PROFILE_ARG! --output-folder=build --build=missing
+if errorlevel 1 (
+    echo conan install failed
+    exit /b 1
+)
+
+REM ———————————————————————————————————————————————————
+
 cd build
 
 REM Run cmake and build

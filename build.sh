@@ -19,6 +19,33 @@ if [ "$CLEAR_BUILD" = "1" ]; then
 fi
 
 mkdir -p build
+
+# —————————————————————— CONAN ——————————————————————
+
+CONAN_PROFILE="${PRESET:-default}"
+PROFILE_PATH="./conan/profiles/$CONAN_PROFILE"
+
+if [ -f "$PROFILE_PATH" ]; then
+    CONAN_PROFILE_ARG="$PROFILE_PATH"
+else
+    CONAN_PROFILE_ARG="$CONAN_PROFILE"
+fi
+
+echo $PRESET
+echo $PROFILE_PATH
+echo $CONAN_PROFILE_ARG
+
+conan install . \
+    --profile="$CONAN_PROFILE_ARG" \
+    --output-folder=build \
+    --build=missing
+
+if [ $? -ne 0 ]; then
+    echo "conan install failed"
+    exit 1
+fi
+# ———————————————————————————————————————————————————
+
 cd build
 
 if [ -z "$PRESET" ]; then

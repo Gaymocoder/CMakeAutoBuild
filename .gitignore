@@ -13,6 +13,7 @@ build/
 # Ignore configured conan and CMake presets
 conan/
 CMakePresets.json
+CMakeUserPresets.json
 
 # Don't ignore build-scripts
 !build.sh
