@@ -1,3 +1,5 @@
+#include <boost/algorithm/string.hpp>
+
 #include <print>
 #include <string>
 #include <vector>
@@ -52,26 +54,36 @@ int main(int argc, char** argv)
     }
     std::print("]\n\n");
     
-    // 8. Table-like output with alignment
-    std::print("8. Formatted table:\n");
-    std::print("   ┌──────────┬───────┬──────────┐\n");
-    std::print("   │ {:^8} │ {:^5} │ {:^8} │\n", "Language", "Year", "Type");
-    std::print("   ├──────────┼───────┼──────────┤\n");
-    std::print("   │ {:^8} │ {:^5} │ {:^8} │\n", "C++", 1985, "Compiled");
-    std::print("   │ {:^8} │ {:^5} │ {:^8} │\n", "Python", 1991, "Dynamic");
-    std::print("   │ {:^8} │ {:^5} │ {:^8} │\n", "Rust", 2010, "Compiled");
-    std::print("   └──────────┴───────┴──────────┘\n\n");
+    // 8. Combined formatting
+    std::print("8. Combined formatting example:\n");
+    std::print("    Hex {:0>6x} | Decimal {:0>5d} | Float {:.2f}\n\n", 255, 42, 3.7);
+
+    // 9. Boost.Algorithm string utilities
+    std::print("9. Boost.Algorithm:\n");
     
-    // 9. Large numbers with locale (thousands separator)
-    std::print("9. Large numbers:\n");
-    int large = 1000000;
-    std::print("   {:L} (with locale support)\n\n", large);
-    
-    // 10. Combined formatting
-    std::print("10. Combined formatting example:\n");
-    std::print("    Hex {:0>6x} | Decimal {:0>5d} | Float {:.2f}\n", 255, 42, 3.7);
-    
-    std::print("\n════════════════════════════════════════\n");
-    
+    std::string s = "  hello, boost world!  ";
+    boost::trim(s);
+    std::print("   trim:       '{}'\n", s);
+
+    boost::to_upper(s);
+    std::print("   to_upper:   '{}'\n", s);
+
+    boost::to_lower(s);
+    std::print("   to_lower:   '{}'\n", s);
+
+    std::string csv = "one,two,three,four";
+    std::vector <std::string> parts;
+    boost::split(parts, csv, boost::is_any_of(","));
+    std::print("   split csv:  [");
+    for (size_t i = 0; i < parts.size(); ++i) {
+        std::print("{}", parts[i]);
+        if (i < parts.size() - 1) std::print(", ");
+    }
+    std::print("]\n");
+
+    std::print("   starts_with 'one': {}\n", boost::starts_with(csv, "one"));
+    std::print("   contains 'three':  {}\n\n", boost::contains(csv, "three"));
+
+    std::print("════════════════════════════════════════\n");
     return 0;
 }

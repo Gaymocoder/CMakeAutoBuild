@@ -5,7 +5,7 @@ class gcsabConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     
     def requirements(self):
-        pass
+        self.requires("boost/1.87.0")
 
     def generate(self):
         CMakeToolchain(self).generate()

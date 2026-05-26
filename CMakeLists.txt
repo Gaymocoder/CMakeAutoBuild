@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.28)
 project(CMakeAutoBuild VERSION 1.1.0)
 
+find_package(Boost REQUIRED)
+
 block()
     include(${CMAKE_CURRENT_LIST_DIR}/cmake/gcs_utils.cmake)
 
