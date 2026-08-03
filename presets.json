@@ -63,7 +63,7 @@
             "os": "Windows",
             "arch": "x86_64",
             "compiler": "clang",
-            "compiler.version": "17",
+            "compiler.version": "22",
             "compiler.libcxx": "libstdc++11",
             "build_type": "Release"
         },
@@ -72,14 +72,14 @@
                 {
                     "uses": "KyleMayes/install-llvm-action@v2",
                     "with": {
-                        "version": "17"
+                        "version": "22"
                     }
                 },
                 {
                     "uses": "egor-tensin/setup-mingw@v2",
                     "with": {
                         "platform": "x64",
-                        "version": "14"
+                        "version": "14.2.0"
                     }
                 }
             ]
@@ -102,7 +102,7 @@
             "os": "Windows",
             "arch": "x86_64",
             "compiler": "clang",
-            "compiler.version": "17",
+            "compiler.version": "22",
             "compiler.runtime": "dynamic",
             "compiler.runtime_type": "Release",
             "compiler.runtime_version": "v145",
@@ -116,7 +116,7 @@
                 {
                     "uses": "KyleMayes/install-llvm-action@v2",
                     "with": {
-                        "version": "17"
+                        "version": "22"
                     }
                 }
             ]
@@ -174,7 +174,7 @@
                     "uses": "egor-tensin/setup-mingw@v2",
                     "with": {
                         "platform": "x64",
-                        "version": "14"
+                        "version": "14.2.0"
                     }
                 }
             ]
@@ -184,7 +184,7 @@
     "msvc": {
         "cmake": {
             "description": "MSVC++",
-            "generator": "Visual Studio 17 2022",
+            "generator": "Visual Studio 18 2026",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "./build/conan_toolchain.cmake",
