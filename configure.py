@@ -26,7 +26,23 @@ def main():
 
     github_ci["jobs"]["build"]["strategy"]["matrix"]["include"] = []
     matrix = github_ci["jobs"]["build"]["strategy"]["matrix"]["include"]
-    github_ci["jobs"]["build"]["steps"] = [{"uses":"actions/checkout@v4"}]
+    github_ci["jobs"]["build"]["steps"] = [
+        {
+            "uses": "actions/checkout@v4"
+        },
+        {
+            "uses": "actions/setup-python@v5",
+            "with": {
+                "python-version": "3.12"
+            }
+        },
+        {
+            "run": "pip install conan"
+        },
+        {
+            "run": "conan profile detect --force"
+        }
+    ]
 
     for key in presets.keys():
         preset = presets[key]
