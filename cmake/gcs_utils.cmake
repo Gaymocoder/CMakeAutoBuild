@@ -36,10 +36,13 @@ function(gcs_export_prepare target_name)
         $<INSTALL_INTERFACE:include>
     )
     set_target_properties("${target_name}" PROPERTIES EXPORT_NAME "${MODULE}")
-    target_compile_options("${target_name}" PRIVATE -Wall -Wextra -pedantic -O0 -g)
+    target_compile_options("${target_name}" PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/W4;/Od;/Zi>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall;-Wextra;-pedantic;-O0;-g>
+    )
     if (MINGW)
         target_link_libraries("${target_name}" INTERFACE
-            $<$<COMPILE_FEATURES:cxx_std_23> : stdc++exp>
+            $<$<COMPILE_FEATURES:cxx_std_23>:stdc++exp>
         )
     endif()
 
@@ -49,10 +52,13 @@ endfunction()
 
 function(gcs_binary_prepare target_name)
     target_include_directories("${target_name}" PUBLIC "${GCS_INCLUDE_DIRS}")
-    target_compile_options("${target_name}" PRIVATE -Wall -Wextra -pedantic -O0 -g)
+    target_compile_options("${target_name}" PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/W4;/Od;/Zi>
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall;-Wextra;-pedantic;-O0;-g>
+    )
     if (MINGW)
         target_link_libraries("${target_name}" PUBLIC
-            $<$<COMPILE_FEATURES:cxx_std_23> : stdc++exp>
+            $<$<COMPILE_FEATURES:cxx_std_23>:stdc++exp>
         )
     endif()
 
