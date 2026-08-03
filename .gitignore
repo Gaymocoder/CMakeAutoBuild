@@ -15,5 +15,10 @@ conan/
 CMakePresets.json
 CMakeUserPresets.json
 
+# Ignore ReleaseNotesSamples
+ReleaseNotesSamples.md
+
 # Don't ignore build-scripts
 !build.sh
+!.github/
+!.github/**

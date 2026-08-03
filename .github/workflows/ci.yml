@@ -1,11 +1,11 @@
 name: CI
-true:
+on:
   push:
     branches:
     - master
     - stable
-  pull_request: null
-  workflow_dispatch: null
+  pull_request:
+  workflow_dispatch:
 jobs:
   build:
     strategy:
@@ -13,10 +13,10 @@ jobs:
         include:
         - preset: clang
           os: ubuntu-latest
-          build: ./build.sh
+          build: sh build.sh
         - preset: clang-gcc
           os: ubuntu-latest
-          build: ./build.sh
+          build: sh build.sh
         - preset: clang-mingw
           os: windows-latest
           build: build.bat
@@ -25,7 +25,7 @@ jobs:
           build: build.bat
         - preset: gcc
           os: ubuntu-latest
-          build: ./build.sh
+          build: sh build.sh
         - preset: mingw32
           os: windows-latest
           build: build.bat
@@ -35,56 +35,47 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
-    - if: matrix.preset == clang
+    - if: ${{ matrix.preset == 'clang' }}
       name: install
-      run: '|
-
+      run: |-
         sudo apt update
-
-        sudo apt install -y clang-17'
-    - if: matrix.preset == clang-gcc
+        sudo apt install -y clang-17
+    - if: ${{ matrix.preset == 'clang-gcc' }}
       name: install
-      run: '|
-
+      run: |-
         sudo apt update
-
-        sudo apt install -y clang-17'
-    - if: matrix.preset == clang-gcc
+        sudo apt install -y clang-17
+    - if: ${{ matrix.preset == 'clang-gcc' }}
       name: install
-      run: '|
-
+      run: |-
         sudo apt update
-
-        sudo apt install -y g++'
+        sudo apt install -y g++
     - uses: KyleMayes/install-llvm-action@v2
       with:
         version: '17'
-      if: matrix.preset == clang-mingw
+      if: ${{ matrix.preset == 'clang-mingw' }}
     - uses: egor-tensin/setup-mingw@v2
       with:
         platform: x64
         version: '14'
-      if: matrix.preset == clang-mingw
-    - shell: msys2 {0}
+      if: ${{ matrix.preset == 'clang-mingw' }}
     - uses: ilammy/msvc-dev-cmd@v1
-      if: matrix.preset == clang-msvc
+      if: ${{ matrix.preset == 'clang-msvc' }}
     - uses: KyleMayes/install-llvm-action@v2
       with:
         version: '17'
-      if: matrix.preset == clang-msvc
-    - if: matrix.preset == gcc
+      if: ${{ matrix.preset == 'clang-msvc' }}
+    - if: ${{ matrix.preset == 'gcc' }}
       name: install
-      run: '|
-
+      run: |-
         sudo apt update
-
-        sudo apt install -y g++'
+        sudo apt install -y g++
     - uses: egor-tensin/setup-mingw@v2
       with:
         platform: x64
         version: '14'
-      if: matrix.preset == mingw32
+      if: ${{ matrix.preset == 'mingw32' }}
     - uses: ilammy/msvc-dev-cmd@v1
-      if: matrix.preset == msvc
+      if: ${{ matrix.preset == 'msvc' }}
     - name: Build
       run: ${{ matrix.build }}
