@@ -28,19 +28,22 @@ def main():
     matrix = github_ci["jobs"]["build"]["strategy"]["matrix"]["include"]
     github_ci["jobs"]["build"]["steps"] = [
         {
-            "uses": "actions/checkout@v4"
-        },
-        {
             "uses": "actions/setup-python@v5",
             "with": {
                 "python-version": "3.12"
             }
         },
         {
-            "run": "pip install conan"
+            "run": "pip install conan ruamel.yaml"
         },
         {
             "run": "conan profile detect --force"
+        },
+        {
+            "uses": "actions/checkout@v4"
+        },
+        {
+            "run": "python configure.py"
         }
     ]
 
@@ -59,10 +62,11 @@ def main():
             case "Linux":
                 matrix_preset["os"] = "ubuntu-latest"
                 matrix_preset["build"] = "sh build.sh"
+
             case "Windows":
                 matrix_preset["os"] = "windows-latest"
                 matrix_preset["build"] = "build.bat"
-        
+
         for ghkey in preset["github_ci"].keys():
             match ghkey:
                 case "uses":
@@ -85,7 +89,7 @@ def main():
                 case _:
                     github_ci["jobs"]["build"]["steps"].append({ghkey: preset["github_ci"][ghkey]})
         matrix.append(matrix_preset)
-    github_ci["jobs"]["build"]["steps"].append({"name": "Build", "run": "${{ matrix.build }}"})
+    github_ci["jobs"]["build"]["steps"].append({"name": "Build", "run": "${{ matrix.build }} ${{ matrix.preset }}"})
 
 
     with open('CMakePresets.json', 'w', encoding = 'utf-8') as f:
