@@ -46,14 +46,10 @@ if [ $? -ne 0 ]; then
 fi
 # ———————————————————————————————————————————————————
 
-cd build
-
 if [ -z "$PRESET" ]; then
-    cmake ..
-    cmake --build .
+    cmake -B build -S . || exit 1
 else
-    cmake --preset "$PRESET" ..
-    cmake --build .
+    cmake --preset "$PRESET" . || exit 1
 fi
 
-cd ..
+cmake --build build

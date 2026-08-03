@@ -45,15 +45,11 @@ if errorlevel 1 (
 
 REM ———————————————————————————————————————————————————
 
-cd build
-
-REM Run cmake and build
 if "!PRESET!"=="" (
-    cmake ..
-    cmake --build .
+    cmake -B build -S .
 ) else (
-    cmake --preset !PRESET! ..
-    cmake --build .
+    cmake --preset !PRESET! .
 )
+if errorlevel 1 exit /b 1
 
-cd ..
+cmake --build build --config Release
