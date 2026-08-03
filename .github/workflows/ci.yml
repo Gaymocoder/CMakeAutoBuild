@@ -20,19 +20,19 @@ jobs:
           build: sh build.sh
         - preset: clang-mingw
           os: windows-latest
-          build: build.bat
+          build: ".\build.bat"
         - preset: clang-msvc
           os: windows-latest
-          build: build.bat
+          build: ".\build.bat"
         - preset: gcc
           os: ubuntu-latest
           build: sh build.sh
         - preset: mingw32
           os: windows-latest
-          build: build.bat
+          build: ".\build.bat"
         - preset: msvc
           os: windows-latest
-          build: build.bat
+          build: ".\build.bat"
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/setup-python@v5
@@ -46,17 +46,17 @@ jobs:
       name: install
       run: |-
         sudo apt update
-        sudo apt install -y clang-17
+        sudo apt install -y clang-17 libc++-17-dev libc++abi-17-dev
     - if: ${{ matrix.preset == 'clang-gcc' }}
       name: install
       run: |-
         sudo apt update
-        sudo apt install -y clang-17
+        sudo apt install -y clang-17 libc++-17-dev libc++abi-17-dev
     - if: ${{ matrix.preset == 'clang-gcc' }}
       name: install
       run: |-
         sudo apt update
-        sudo apt install -y g++
+        sudo apt install -y g++-14
     - uses: KyleMayes/install-llvm-action@v2
       with:
         version: '17'
@@ -76,7 +76,7 @@ jobs:
       name: install
       run: |-
         sudo apt update
-        sudo apt install -y g++
+        sudo apt install -y g++-14
     - uses: egor-tensin/setup-mingw@v2
       with:
         platform: x64

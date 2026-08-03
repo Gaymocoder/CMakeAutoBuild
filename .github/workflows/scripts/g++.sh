@@ -1,2 +1,2 @@
 sudo apt update
-sudo apt install -y g++
+sudo apt install -y g++-14

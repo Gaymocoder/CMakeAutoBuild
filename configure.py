@@ -65,7 +65,7 @@ def main():
 
             case "Windows":
                 matrix_preset["os"] = "windows-latest"
-                matrix_preset["build"] = "build.bat"
+                matrix_preset["build"] = ".\build.bat"
 
         for ghkey in preset["github_ci"].keys():
             match ghkey:
