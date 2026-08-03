@@ -51,7 +51,7 @@ function(gcs_binary_prepare target_name)
     target_include_directories("${target_name}" PUBLIC "${GCS_INCLUDE_DIRS}")
     target_compile_options("${target_name}" PRIVATE -Wall -Wextra -pedantic -O0 -g)
     if (MINGW)
-        target_link_libraries("${target_name}" INTERFACE
+        target_link_libraries("${target_name}" PUBLIC
             $<$<COMPILE_FEATURES:cxx_std_23> : stdc++exp>
         )
     endif()
