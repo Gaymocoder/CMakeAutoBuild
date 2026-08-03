@@ -51,8 +51,11 @@ jobs:
         sudo apt update
         sudo apt install -y libc++-22-dev libc++abi-22-dev
 
-        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-22 100
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-22 100
+        sudo update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-22   1000
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-22 1000
+        sudo update-alternatives --set clang   /usr/bin/clang-22
+        sudo update-alternatives --set clang++ /usr/bin/clang++-22
+        clang --version
     - if: ${{ matrix.preset == 'clang-gcc' }}
       name: install
       run: |-
@@ -62,8 +65,11 @@ jobs:
         sudo apt update
         sudo apt install -y libc++-22-dev libc++abi-22-dev
 
-        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-22 100
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-22 100
+        sudo update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-22   1000
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-22 1000
+        sudo update-alternatives --set clang   /usr/bin/clang-22
+        sudo update-alternatives --set clang++ /usr/bin/clang++-22
+        clang --version
     - if: ${{ matrix.preset == 'clang-gcc' }}
       name: install
       run: |-
@@ -73,18 +79,19 @@ jobs:
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
     - uses: KyleMayes/install-llvm-action@v2
       with:
-        version: '22'
+        version: '20'
       if: ${{ matrix.preset == 'clang-mingw' }}
-    - uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
-        version: 14.2.0
-      if: ${{ matrix.preset == 'clang-mingw' }}
+    - if: ${{ matrix.preset == 'clang-mingw' }}
+      name: install
+      run: |-
+        choco install mingw --version=14.2.0 -y
+        echo "C:\ProgramData\mingw64\mingw64\bin" >> $env:GITHUB_PATH
+      shell: pwsh
     - uses: ilammy/msvc-dev-cmd@v1
       if: ${{ matrix.preset == 'clang-msvc' }}
     - uses: KyleMayes/install-llvm-action@v2
       with:
-        version: '22'
+        version: '20'
       if: ${{ matrix.preset == 'clang-msvc' }}
     - if: ${{ matrix.preset == 'gcc' }}
       name: install
@@ -93,11 +100,12 @@ jobs:
         sudo apt install -y g++-14
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-    - uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
-        version: 14.2.0
-      if: ${{ matrix.preset == 'mingw32' }}
+    - if: ${{ matrix.preset == 'mingw32' }}
+      name: install
+      run: |-
+        choco install mingw --version=14.2.0 -y
+        echo "C:\ProgramData\mingw64\mingw64\bin" >> $env:GITHUB_PATH
+      shell: pwsh
     - uses: ilammy/msvc-dev-cmd@v1
       if: ${{ matrix.preset == 'msvc' }}
     - name: Build

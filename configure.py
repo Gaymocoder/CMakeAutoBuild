@@ -73,8 +73,9 @@ def main():
                     for use in preset["github_ci"][ghkey]:
                         use["if"] = f'${{{{ matrix.preset == \'{key}\' }}}}'
                         github_ci["jobs"]["build"]["steps"].append(use)
+
                 case "run-file":
-                    for script_name in preset["github_ci"][ghkey]:
+                    for script_name in preset["github_ci"][ghkey]["scripts"]:
                         script_path = os.path.join(".github", "workflows", "scripts", script_name)
                         command = {
                             "if": f'${{{{ matrix.preset == \'{key}\' }}}}',
@@ -83,9 +84,17 @@ def main():
                         if os.path.exists(script_path):
                             with open(script_path, 'r', encoding = 'utf-8') as script:
                                 command["run"] = lss(script.read())
+                        if "shell" in preset["github_ci"][ghkey]:
+                            command["shell"] = preset["github_ci"][ghkey]["shell"]
                         github_ci["jobs"]["build"]["steps"].append(command)
+
                 case "run":
-                    github_ci["jobs"]["build"]["steps"].append({"name": "install", "run": preset["github_ci"][ghkey]})
+                    command["name"] = "install"
+                    command["run"] = preset["github_ci"][ghkey]["run"]
+                    if "shell" in preset["github_ci"][ghkey]:
+                        command["shell"] = preset["github_ci"][ghkey]["shell"]
+                    github_ci["jobs"]["build"]["steps"].append(command)
+
                 case _:
                     github_ci["jobs"]["build"]["steps"].append({ghkey: preset["github_ci"][ghkey]})
         matrix.append(matrix_preset)
