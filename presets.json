@@ -17,6 +17,9 @@
             "compiler.version": "17",
             "compiler.libcxx": "libc++",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "run-file": ["clang.sh"]
         }
     },
     
@@ -38,6 +41,9 @@
             "compiler.version": "17",
             "compiler.libcxx": "libstdc++11",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "run-file": ["clang.sh", "g++.sh"]
         }
     },
     
@@ -60,6 +66,24 @@
             "compiler.version": "17",
             "compiler.libcxx": "libstdc++11",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "uses": [
+                {
+                    "uses": "KyleMayes/install-llvm-action@v2",
+                    "with": {
+                        "version": "17"
+                    }
+                },
+                {
+                    "uses": "egor-tensin/setup-mingw@v2",
+                    "with": {
+                        "platform": "x64",
+                        "version": "14"
+                    }
+                }
+            ],
+            "shell": "msys2 {0}"
         }
     },
     
@@ -83,6 +107,19 @@
             "compiler.runtime": "dynamic",
             "compiler.runtime_type": "Release",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "uses": [
+                {
+                    "uses": "ilammy/msvc-dev-cmd@v1"
+                },
+                {
+                    "uses": "KyleMayes/install-llvm-action@v2",
+                    "with": {
+                        "version": "17"
+                    }
+                }
+            ]
         }
     },
 
@@ -105,6 +142,9 @@
             "compiler.version": "14",
             "compiler.libcxx": "libstdc++11",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "run-file": ["g++.sh"]
         }
     },
     
@@ -127,6 +167,17 @@
             "compiler.version": "14",
             "compiler.libcxx": "libstdc++11",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "uses": [
+                {
+                    "uses": "egor-tensin/setup-mingw@v2",
+                    "with": {
+                        "platform": "x64",
+                        "version": "14"
+                    }
+                }
+            ]
         }
     },
     
@@ -148,6 +199,13 @@
             "compiler.runtime": "dynamic",
             "compiler.runtime_type": "Release",
             "build_type": "Release"
+        },
+        "github_ci": {
+            "uses": [
+                {
+                    "uses": "ilammy/msvc-dev-cmd@v1"
+                }
+            ]
         }
     }
 }

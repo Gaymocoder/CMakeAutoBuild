@@ -1,5 +1,6 @@
-import json
 import os
+import json
+import yaml
 
 def main():
     with open("presets.json", "r", encoding = "utf-8") as f:
@@ -17,6 +18,12 @@ def main():
 
     conan_profiles = {}
 
+    with open(os.path.join(".github", "workflow", "ci.yml"), "r", encoding = "utf-8") as f:
+        github_ci = yaml.safe_load(f)
+
+    github_ci["jobs"]["build"]["strategy"]["matrix"]["include"] = []
+    matrix = github_ci["jobs"]["build"]["strategy"]["matrix"]["include"]
+
     for key in presets.keys():
         preset = presets[key]
         cmake_preset = {"name": key, **preset["cmake"]}
@@ -27,7 +34,43 @@ def main():
             conval = preset["conan"][conkey]
             conan_profiles[key] += f'{conkey}={conval}\n'
 
-    with open('CMakePresets.json', 'w', encoding = 'utf-8') as f:
+        matrix_preset = {"preset": f'{key}'}
+        match preset["conan"]["os"]:
+            case "Linux":
+                matrix_preset["os"] = "ubuntu-latest"
+                matrix_preset["build"] = "./build.sh"
+            case "Windows":
+                matrix_preset["os"] = "windows-latest"
+                matrix_preset["build"] = "build.bat"
+        
+        for ghkey in preset["github_ci"].keys():
+            match ghkey:
+                case "uses":
+                    for use in preset["github_ci"][ghkey]:
+                        use["if"] = f'matrix.preset == {key}'
+                        github_ci["jobs"]["build"]["steps"].append(use)
+                case "run-file":
+                    for script_name in preset["github_ci"][ghkey]:
+                        script_path = os.path.join(".github", "workflow", "scripts", script_name)
+                        command = {
+                            "if": f'matrix.preset == {key}',
+                            "name": "install",
+                            "run": '|\n'
+                        }
+                        if os.path.exists(script_path):
+                            with open(script_path, 'r', encoding = 'utf-8') as script:
+                                for line in script:
+                                    command["run"] += line
+                        github_ci["jobs"]["build"]["steps"].append(command)
+                case "run":
+                    github_ci["jobs"]["build"]["steps"].append({"name": "install", "run": preset["github_ci"][ghkey]})
+                case _:
+                    github_ci["jobs"]["build"]["steps"].append({ghkey: preset["github_ci"][ghkey]})
+        matrix.append(matrix_preset)
+    github_ci["jobs"]["build"]["steps"].append({"name": "Build", "run": "${{ matrix.build }}"})
+
+
+    '''with open('CMakePresets.json', 'w', encoding = 'utf-8') as f:
         json.dump(cmake_presets, f, indent = 4)
 
     profile_dir = os.path.join(os.path.abspath('.'), 'conan', 'profiles')
@@ -35,6 +78,9 @@ def main():
     for key in conan_profiles.keys():    
         profile_path = os.path.join(profile_dir, key)
         with open(profile_path, 'w', encoding = 'utf-8') as f:
-            f.write(conan_profiles[key])
+            f.write(conan_profiles[key])'''
+
+    with open(os.path.join(".github", "workflow", "ci.yml"), "w", encoding = "utf-8") as f:
+        yaml.dump(github_ci, f, sort_keys = False, default_flow_style = False)
 
 main()

@@ -1,0 +1,90 @@
+name: CI
+true:
+  push:
+    branches:
+    - master
+    - stable
+  pull_request: null
+  workflow_dispatch: null
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+        - preset: clang
+          os: ubuntu-latest
+          build: ./build.sh
+        - preset: clang-gcc
+          os: ubuntu-latest
+          build: ./build.sh
+        - preset: clang-mingw
+          os: windows-latest
+          build: build.bat
+        - preset: clang-msvc
+          os: windows-latest
+          build: build.bat
+        - preset: gcc
+          os: ubuntu-latest
+          build: ./build.sh
+        - preset: mingw32
+          os: windows-latest
+          build: build.bat
+        - preset: msvc
+          os: windows-latest
+          build: build.bat
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+    - if: matrix.preset == clang
+      name: install
+      run: '|
+
+        sudo apt update
+
+        sudo apt install -y clang-17'
+    - if: matrix.preset == clang-gcc
+      name: install
+      run: '|
+
+        sudo apt update
+
+        sudo apt install -y clang-17'
+    - if: matrix.preset == clang-gcc
+      name: install
+      run: '|
+
+        sudo apt update
+
+        sudo apt install -y g++'
+    - uses: KyleMayes/install-llvm-action@v2
+      with:
+        version: '17'
+      if: matrix.preset == clang-mingw
+    - uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+        version: '14'
+      if: matrix.preset == clang-mingw
+    - shell: msys2 {0}
+    - uses: ilammy/msvc-dev-cmd@v1
+      if: matrix.preset == clang-msvc
+    - uses: KyleMayes/install-llvm-action@v2
+      with:
+        version: '17'
+      if: matrix.preset == clang-msvc
+    - if: matrix.preset == gcc
+      name: install
+      run: '|
+
+        sudo apt update
+
+        sudo apt install -y g++'
+    - uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+        version: '14'
+      if: matrix.preset == mingw32
+    - uses: ilammy/msvc-dev-cmd@v1
+      if: matrix.preset == msvc
+    - name: Build
+      run: ${{ matrix.build }}
