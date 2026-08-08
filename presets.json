@@ -1,4 +1,28 @@
 {
+    ".common": [
+        {
+            "uses": "actions/setup-python@v5",
+            "with": {
+                "python-version": "3.12"
+            }
+        },
+        {
+            "run": "pip install conan ruamel.yaml"
+        },
+        {
+            "uses": "actions/checkout@v4"
+        },
+        {
+            "run": "conan profile detect --force"
+        },
+        {
+            "run": "python configure.py"
+        },
+        {
+            "run": "git diff --exit-code .github/workflows/ci.yml"
+        }
+    ],
+
     "clang": {
         "cmake": {
             "description": "Clang + LLVM libc++",

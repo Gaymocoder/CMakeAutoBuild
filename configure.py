@@ -26,28 +26,12 @@ def main():
 
     github_ci["jobs"]["build"]["strategy"]["matrix"]["include"] = []
     matrix = github_ci["jobs"]["build"]["strategy"]["matrix"]["include"]
-    github_ci["jobs"]["build"]["steps"] = [
-        {
-            "uses": "actions/setup-python@v5",
-            "with": {
-                "python-version": "3.12"
-            }
-        },
-        {
-            "run": "pip install conan ruamel.yaml"
-        },
-        {
-            "run": "conan profile detect --force"
-        },
-        {
-            "uses": "actions/checkout@v4"
-        },
-        {
-            "run": "python configure.py"
-        }
-    ]
+    github_ci["jobs"]["build"]["steps"] = presets[".common"]
 
     for key in presets.keys():
+        if key == ".common":
+            continue
+
         preset = presets[key]
         cmake_preset = {"name": key, **preset["cmake"]}
         cmake_presets["configurePresets"].append(cmake_preset)
@@ -89,8 +73,10 @@ def main():
                         github_ci["jobs"]["build"]["steps"].append(command)
 
                 case "run":
-                    command["name"] = "install"
-                    command["run"] = preset["github_ci"][ghkey]["run"]
+                    command = {
+                        "name": "install",
+                        "run": preset["github_ci"][ghkey]["run"]
+                    }
                     if "shell" in preset["github_ci"][ghkey]:
                         command["shell"] = preset["github_ci"][ghkey]["shell"]
                     github_ci["jobs"]["build"]["steps"].append(command)
