@@ -1,6 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
+if "!GCS_WERROR!"=="" set GCS_WERROR=OFF
 set CLEAR_BUILD=0
 set PRESET=
 
@@ -46,9 +47,9 @@ if errorlevel 1 (
 REM ———————————————————————————————————————————————————
 
 if "!PRESET!"=="" (
-    cmake -B build -S .
+    cmake -B build -S . -DGCS_WARNINGS_AS_ERRORS="$GCS_WERROR" || exit 1
 ) else (
-    cmake --preset !PRESET! .
+    cmake --preset !PRESET! . -DGCS_WARNINGS_AS_ERRORS="$GCS_WERROR" || exit 1
 )
 if errorlevel 1 exit /b 1
 

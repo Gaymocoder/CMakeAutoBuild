@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+:="${GCS_WERROR:-OFF}"
 CLEAR_BUILD=0
 PRESET=""
 
@@ -44,12 +45,13 @@ if [ $? -ne 0 ]; then
     echo "conan install failed"
     exit 1
 fi
+
 # ———————————————————————————————————————————————————
 
 if [ -z "$PRESET" ]; then
-    cmake -B build -S . || exit 1
+    cmake -B build -S . -DGCS_WARNINGS_AS_ERRORS="$GCS_WERROR" || exit 1
 else
-    cmake --preset "$PRESET" . || exit 1
+    cmake --preset "$PRESET" . -DGCS_WARNINGS_AS_ERRORS="$GCS_WERROR" || exit 1
 fi
 
 cmake --build build
