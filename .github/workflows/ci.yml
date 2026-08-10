@@ -8,6 +8,8 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    env:
+      GCS_WERROR: ON
     strategy:
       fail-fast: false
       matrix:
