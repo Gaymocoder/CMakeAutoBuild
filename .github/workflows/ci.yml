@@ -138,13 +138,10 @@ jobs:
         path: results
     - name: Record notes
       run: |
-        cat results/*.txt | tr -d '\r' | sort \
-        | awk '{
-            if      ($2 == "success") mark = "✓"
-            else if ($2 == "failure") mark = "✗"
-            else                      mark = "? (" $2 ")"
-            printf "%-13s %s\n", $1, mark
-          }' > verdict.txt
+        { printf '\n— Builds with:\n\n'
+          cat results/*.txt | tr -d '\r' | sort \
+            | awk '{ printf "    %-13s %s\n", $1, ($2=="success" ? "✓" : ($2=="failure" ? "✗" : "? ("$2")")) }'
+        } > verdict.txt
         ls -la results/
         echo "--- collected ---"
         cat results/*.txt
@@ -153,5 +150,5 @@ jobs:
         git config user.name "github-actions"
         git config user.email "actions@github.com"
         git fetch origin "refs/notes/ci:refs/notes/ci" || true
-        git notes --ref=ci add -f -F verdict.txt ${{ github.sha }}
+        git notes --ref=ci add -f --no-stripspace -F verdict.txt ${{ github.sha }}
         git push origin refs/notes/ci
