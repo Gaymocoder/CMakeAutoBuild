@@ -27,6 +27,7 @@
         {
             "name": "Log results",
             "if": "always()",
+            "shell": "bash",
             "run": "echo \"${{ matrix.preset }} ${{ job.status }}\" > r-${{ matrix.preset }}.txt"
         },
         {
