@@ -5,6 +5,12 @@
 #include <vector>
 #include <format>
 
+int test_werror_func(int x)
+{
+    if (x == 1)
+        return 1;
+}
+
 int main(int argc, char** argv)
 {
     std::print("════════════════════════════════════════\n");
