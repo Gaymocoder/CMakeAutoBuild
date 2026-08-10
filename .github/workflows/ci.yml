@@ -41,9 +41,10 @@ jobs:
       with:
         python-version: '3.12'
     - run: pip install conan ruamel.yaml
-    - run: conan profile detect --force
     - uses: actions/checkout@v4
+    - run: conan profile detect --force
     - run: python configure.py
+    - run: git diff --exit-code .github/workflows/ci.yml
     - if: ${{ matrix.preset == 'clang' }}
       name: install
       run: |-
@@ -112,3 +113,34 @@ jobs:
       if: ${{ matrix.preset == 'msvc' }}
     - name: Build
       run: ${{ matrix.build }} ${{ matrix.preset }}
+    - name: Log results
+      if: always()
+      run: echo "${{ matrix.preset }} ${{ job.status }}" > r-${{ matrix.preset 
+        }}.txt
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ci-result-${{ matrix.preset }}
+        path: r-${{ matrix.preset }}.txt
+  notes:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: ci-result-*
+        merge-multiple: true
+        path: results
+    - name: Record notes
+      run: |
+        cat results/*.txt | sort \
+          | awk '{ printf "%-13s %s\n", $1, ($2 == "success" ? "✓" : "✗") }' > verdict.txt
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git fetch origin "refs/notes/ci:refs/notes/ci" || true
+        git notes --ref=ci add -f -F verdict.txt ${{ github.sha }}
+        git push origin refs/notes/ci

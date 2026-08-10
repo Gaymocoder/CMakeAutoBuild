@@ -26,10 +26,10 @@ def main():
 
     github_ci["jobs"]["build"]["strategy"]["matrix"]["include"] = []
     matrix = github_ci["jobs"]["build"]["strategy"]["matrix"]["include"]
-    github_ci["jobs"]["build"]["steps"] = presets[".common"]
+    github_ci["jobs"]["build"]["steps"] = presets[".common-pre"]
 
     for key in presets.keys():
-        if key == ".common":
+        if key in [".common-pre", ".common-post"]:
             continue
 
         preset = presets[key]
@@ -85,6 +85,7 @@ def main():
                     github_ci["jobs"]["build"]["steps"].append({ghkey: preset["github_ci"][ghkey]})
         matrix.append(matrix_preset)
     github_ci["jobs"]["build"]["steps"].append({"name": "Build", "run": "${{ matrix.build }} ${{ matrix.preset }}"})
+    github_ci["jobs"]["build"]["steps"].extend(presets[".common-post"])
 
 
     with open('CMakePresets.json', 'w', encoding = 'utf-8') as f:
