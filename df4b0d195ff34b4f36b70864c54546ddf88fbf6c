@@ -1,0 +1,10 @@
+
+— Builds with:
+
+    clang         ✓
+    clang-gcc     ✓
+    clang-mingw   ✓
+    clang-msvc    ✓
+    gcc           ✓
+    mingw32       ✓
+    msvc          ✓
