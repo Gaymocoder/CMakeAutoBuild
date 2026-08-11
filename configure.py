@@ -1,5 +1,5 @@
-import os
 import json
+import os, shutil
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString as lss
 
@@ -92,6 +92,7 @@ def main():
         json.dump(cmake_presets, f, indent = 4)
 
     profile_dir = os.path.join(os.path.abspath('.'), 'conan', 'profiles')
+    shutil.rmtree(profile_dir, ignore_errors = True)
     os.makedirs(profile_dir, exist_ok = True)
     for key in conan_profiles.keys():    
         profile_path = os.path.join(profile_dir, key)

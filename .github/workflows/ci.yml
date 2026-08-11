@@ -14,25 +14,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - preset: clang
+        - preset: unix-clang-libc++
           os: ubuntu-latest
           build: sh build.sh
-        - preset: clang-gcc
+        - preset: unix-clang-libstdc++
           os: ubuntu-latest
           build: sh build.sh
-        - preset: clang-mingw
+        - preset: win64-clang-libstdc++
           os: windows-latest
           build: ./build.bat
-        - preset: clang-msvc
+        - preset: win64-clang-msvc
           os: windows-latest
           build: ./build.bat
-        - preset: gcc
+        - preset: unix-gcc-libstdc++
           os: ubuntu-latest
           build: sh build.sh
-        - preset: mingw32
+        - preset: win64-gcc-libstdc++
           os: windows-latest
           build: ./build.bat
-        - preset: msvc
+        - preset: win64-msvc-msvcstl
           os: windows-latest
           build: ./build.bat
     runs-on: ${{ matrix.os }}
@@ -45,7 +45,7 @@ jobs:
     - run: conan profile detect --force
     - run: python configure.py
     - run: git diff --exit-code .github/workflows/ci.yml
-    - if: ${{ matrix.preset == 'clang' }}
+    - if: ${{ matrix.preset == 'unix-clang-libc++' }}
       name: install
       run: |-
         wget https://apt.llvm.org/llvm.sh
@@ -59,7 +59,7 @@ jobs:
         sudo update-alternatives --set clang   /usr/bin/clang-22
         sudo update-alternatives --set clang++ /usr/bin/clang++-22
         clang --version
-    - if: ${{ matrix.preset == 'clang-gcc' }}
+    - if: ${{ matrix.preset == 'unix-clang-libstdc++' }}
       name: install
       run: |-
         wget https://apt.llvm.org/llvm.sh
@@ -73,7 +73,7 @@ jobs:
         sudo update-alternatives --set clang   /usr/bin/clang-22
         sudo update-alternatives --set clang++ /usr/bin/clang++-22
         clang --version
-    - if: ${{ matrix.preset == 'clang-gcc' }}
+    - if: ${{ matrix.preset == 'unix-clang-libstdc++' }}
       name: install
       run: |-
         sudo apt update
@@ -83,34 +83,34 @@ jobs:
     - uses: KyleMayes/install-llvm-action@v2
       with:
         version: '20'
-      if: ${{ matrix.preset == 'clang-mingw' }}
-    - if: ${{ matrix.preset == 'clang-mingw' }}
+      if: ${{ matrix.preset == 'win64-clang-libstdc++' }}
+    - if: ${{ matrix.preset == 'win64-clang-libstdc++' }}
       name: install
       run: |-
         choco install mingw --version=14.2.0 -y
         echo "C:\ProgramData\mingw64\mingw64\bin" >> $env:GITHUB_PATH
       shell: pwsh
     - uses: ilammy/msvc-dev-cmd@v1
-      if: ${{ matrix.preset == 'clang-msvc' }}
+      if: ${{ matrix.preset == 'win64-clang-msvc' }}
     - uses: KyleMayes/install-llvm-action@v2
       with:
         version: '20'
-      if: ${{ matrix.preset == 'clang-msvc' }}
-    - if: ${{ matrix.preset == 'gcc' }}
+      if: ${{ matrix.preset == 'win64-clang-msvc' }}
+    - if: ${{ matrix.preset == 'unix-gcc-libstdc++' }}
       name: install
       run: |-
         sudo apt update
         sudo apt install -y g++-14
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-    - if: ${{ matrix.preset == 'mingw32' }}
+    - if: ${{ matrix.preset == 'win64-gcc-libstdc++' }}
       name: install
       run: |-
         choco install mingw --version=14.2.0 -y
         echo "C:\ProgramData\mingw64\mingw64\bin" >> $env:GITHUB_PATH
       shell: pwsh
     - uses: ilammy/msvc-dev-cmd@v1
-      if: ${{ matrix.preset == 'msvc' }}
+      if: ${{ matrix.preset == 'win64-msvc-msvcstl' }}
     - name: Build
       run: ${{ matrix.build }} ${{ matrix.preset }}
     - name: Log results
@@ -140,7 +140,7 @@ jobs:
       run: |
         { printf '\n— Builds with:\n\n'
           cat results/*.txt | tr -d '\r' | sort \
-            | awk '{ printf "    %-13s %s\n", $1, ($2=="success" ? "✓" : ($2=="failure" ? "✗" : "? ("$2")")) }'
+            | awk '{ printf "    %-24s %s\n", $1, ($2=="success" ? "✓" : ($2=="failure" ? "✗" : "? ("$2")")) }'
         } > verdict.txt
         ls -la results/
         echo "--- collected ---"

@@ -40,7 +40,7 @@
         }
     ],
 
-    "clang": {
+    "unix-clang-libc++": {
         "cmake": {
             "description": "Clang + LLVM libc++",
             "binaryDir": "${sourceDir}/build",
@@ -66,7 +66,7 @@
         }
     },
     
-    "clang-gcc": {
+    "unix-clang-libstdc++": {
         "cmake": {
             "description": "Clang + GCC libstdc++",
             "binaryDir": "${sourceDir}/build",
@@ -92,7 +92,7 @@
         }
     },
     
-    "clang-mingw": {
+    "win64-clang-libstdc++": {
         "cmake": {
             "description": "Clang + MinGW libstdc++",
             "generator": "MinGW Makefiles",
@@ -128,14 +128,14 @@
         }
     },
     
-    "clang-msvc": {
+    "win64-clang-msvc": {
         "cmake": {
             "description": "Clang + MSVC++",
             "generator": "MinGW Makefiles",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang",
-                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang-cl",
+                "CMAKE_CXX_COMPILER": "clang-cl",
                 "CMAKE_TOOLCHAIN_FILE": "./cmake/w64-msvc++.cmake",
                 "CMAKE_BUILD_TYPE": "Release"
             }
@@ -165,7 +165,7 @@
         }
     },
 
-    "gcc": {
+    "unix-gcc-libstdc++": {
         "cmake": {
             "description": "GNU C Compiler for Unix Makefiles",
             "generator": "Unix Makefiles",
@@ -192,7 +192,7 @@
         }
     },
     
-    "mingw32": {
+    "win64-gcc-libstdc++": {
         "cmake": {
             "description": "MinGW32",
             "generator": "MinGW Makefiles",
@@ -220,7 +220,7 @@
         }
     },
     
-    "msvc": {
+    "win64-msvc-msvcstl": {
         "cmake": {
             "description": "MSVC++",
             "generator": "Visual Studio 18 2026",
