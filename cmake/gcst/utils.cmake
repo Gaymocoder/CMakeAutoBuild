@@ -1,4 +1,4 @@
-include("${CMAKE_CURRENT_LIST_DIR}/gcs_warnings.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/warnings.cmake")
 
 function(gcs_message message)
     message("-- | (GCS) | ${message}")

@@ -9,11 +9,10 @@ sproject_path = Path(subprocess.check_output(['git', '-C', HERE, 'rev-parse', '-
 
 install_and_update = [
     "./.github/workflows",
-    "./cmake",
+    "./.gcst",
+    "./cmake/gcst",
     "./build.bat",
     "./build.sh",
-    "./configure.py",
-    "./presets.json",
     "./scripts/gcst_update.py"
 ]
 

@@ -43,7 +43,7 @@ jobs:
     - run: pip install conan ruamel.yaml
     - uses: actions/checkout@v4
     - run: conan profile detect --force
-    - run: python configure.py
+    - run: python .gcst/scripts/configure.py
     - run: git diff --exit-code .github/workflows/ci.yml
     - if: ${{ matrix.preset == 'unix-clang-libc++' }}
       name: install

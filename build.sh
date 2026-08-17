@@ -21,6 +21,17 @@ fi
 
 mkdir -p build
 
+# ———————————————————— CONFIGURE ————————————————————
+
+python3 .gcst/scripts/configure.py
+
+if [ $? -ne 0 ]; then
+    echo "configure failed"
+    exit 1
+fi
+
+# ———————————————————————————————————————————————————
+
 # —————————————————————— CONAN ——————————————————————
 
 CONAN_PROFILE="${PRESET:-default}"

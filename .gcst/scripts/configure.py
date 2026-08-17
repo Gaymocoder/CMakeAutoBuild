@@ -1,12 +1,17 @@
 import json
 import os, shutil
+from pathlib import Path
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString as lss
 
 yaml = YAML()
 
+HERE = Path(__file__).resolve().parent
+GCST_DIR = HERE.parent
+ROOT = GCST_DIR.parent
+
 def main():
-    with open("presets.json", "r", encoding = "utf-8") as f:
+    with open(os.path.join(GCST_DIR, "presets.json"), "r", encoding = "utf-8") as f:
         presets = json.load(f)
 
     cmake_presets = {
@@ -21,7 +26,7 @@ def main():
 
     conan_profiles = {}
 
-    with open(os.path.join(".github", "workflows", "ci.yml"), "r", encoding = "utf-8") as f:
+    with open(os.path.join(ROOT, ".github", "workflows", "ci.yml"), "r", encoding = "utf-8") as f:
         github_ci = yaml.load(f)
 
     github_ci["jobs"]["build"]["strategy"]["matrix"]["include"] = []
@@ -60,7 +65,7 @@ def main():
 
                 case "run-file":
                     for script_name in preset["github_ci"][ghkey]["scripts"]:
-                        script_path = os.path.join(".github", "workflows", "scripts", script_name)
+                        script_path = os.path.join(ROOT, ".github", "workflows", "scripts", script_name)
                         command = {
                             "if": f'${{{{ matrix.preset == \'{key}\' }}}}',
                             "name": "install",
@@ -88,10 +93,10 @@ def main():
     github_ci["jobs"]["build"]["steps"].extend(presets[".common-post"])
 
 
-    with open('CMakePresets.json', 'w', encoding = 'utf-8') as f:
+    with open(os.path.join(ROOT, 'CMakePresets.json'), 'w', encoding = 'utf-8') as f:
         json.dump(cmake_presets, f, indent = 4)
 
-    profile_dir = os.path.join(os.path.abspath('.'), 'conan', 'profiles')
+    profile_dir = os.path.join(ROOT, 'conan', 'profiles')
     shutil.rmtree(profile_dir, ignore_errors = True)
     os.makedirs(profile_dir, exist_ok = True)
     for key in conan_profiles.keys():    
@@ -99,7 +104,7 @@ def main():
         with open(profile_path, 'w', encoding = 'utf-8') as f:
             f.write(conan_profiles[key])
 
-    with open(os.path.join(".github", "workflows", "ci.yml"), "w", encoding = "utf-8") as f:
+    with open(os.path.join(ROOT, ".github", "workflows", "ci.yml"), "w", encoding = "utf-8") as f:
         yaml.dump(github_ci, f)
 
 main()

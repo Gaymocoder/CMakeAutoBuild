@@ -22,6 +22,16 @@ if !CLEAR_BUILD!==1 (
 
 mkdir build
 
+REM ———————————————————— CONFIGURE ————————————————————
+
+python .gcst\scripts\configure.py
+if errorlevel 1 (
+    echo configure failed
+    exit /b 1
+)
+
+REM ———————————————————————————————————————————————————
+
 REM —————————————————————— CONAN ——————————————————————
 
 if "!PRESET!"=="" (

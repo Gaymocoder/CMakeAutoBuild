@@ -4,7 +4,7 @@ project(CMakeAutoBuild VERSION 1.1.0)
 find_package(Boost REQUIRED)
 
 block()
-    include(${CMAKE_CURRENT_LIST_DIR}/cmake/gcs_utils.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/gcst/utils.cmake)
 
     set(CMAKE_CXX_STANDARD 23)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)

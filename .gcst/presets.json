@@ -16,7 +16,7 @@
             "run": "conan profile detect --force"
         },
         {
-            "run": "python configure.py"
+            "run": "python .gcst/scripts/configure.py"
         },
         {
             "run": "git diff --exit-code .github/workflows/ci.yml"
@@ -47,7 +47,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "CMAKE_TOOLCHAIN_FILE": "./cmake/unix-libc++.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/gcst/toolchains/unix-libc++.cmake",
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
@@ -73,7 +73,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "CMAKE_TOOLCHAIN_FILE": "./cmake/unix-libstdc++.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/gcst/toolchains/unix-libstdc++.cmake",
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
@@ -100,7 +100,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "CMAKE_TOOLCHAIN_FILE": "./cmake/w64-mingw32.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/gcst/toolchains/w64-mingw32.cmake",
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
@@ -136,7 +136,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang-cl",
                 "CMAKE_CXX_COMPILER": "clang-cl",
-                "CMAKE_TOOLCHAIN_FILE": "./cmake/w64-msvc++.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "./cmake/gcst/toolchains/w64-msvc++.cmake",
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
