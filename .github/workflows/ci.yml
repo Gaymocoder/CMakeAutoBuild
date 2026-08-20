@@ -46,8 +46,7 @@ jobs:
     - run: python .gcst/scripts/configure.py
     - run: git diff --exit-code .github/workflows/ci.yml
     - if: ${{ matrix.preset == 'unix-clang-libc++' }}
-      name: install
-      run: |-
+      run: |+
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh 22
@@ -59,9 +58,9 @@ jobs:
         sudo update-alternatives --set clang   /usr/bin/clang-22
         sudo update-alternatives --set clang++ /usr/bin/clang++-22
         clang --version
+
     - if: ${{ matrix.preset == 'unix-clang-libstdc++' }}
-      name: install
-      run: |-
+      run: |+
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh 22
@@ -73,23 +72,22 @@ jobs:
         sudo update-alternatives --set clang   /usr/bin/clang-22
         sudo update-alternatives --set clang++ /usr/bin/clang++-22
         clang --version
-    - if: ${{ matrix.preset == 'unix-clang-libstdc++' }}
-      name: install
-      run: |-
+
         sudo apt update
         sudo apt install -y g++-14
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+
     - uses: KyleMayes/install-llvm-action@v2
       with:
         version: '20'
       if: ${{ matrix.preset == 'win64-clang-libstdc++' }}
-    - if: ${{ matrix.preset == 'win64-clang-libstdc++' }}
-      name: install
-      run: |-
+    - shell: pwsh
+      if: ${{ matrix.preset == 'win64-clang-libstdc++' }}
+      run: |+
         choco install mingw --version=14.2.0 -y
         echo "C:\ProgramData\mingw64\mingw64\bin" >> $env:GITHUB_PATH
-      shell: pwsh
+
     - uses: ilammy/msvc-dev-cmd@v1
       if: ${{ matrix.preset == 'win64-clang-msvc' }}
     - uses: KyleMayes/install-llvm-action@v2
@@ -97,18 +95,18 @@ jobs:
         version: '20'
       if: ${{ matrix.preset == 'win64-clang-msvc' }}
     - if: ${{ matrix.preset == 'unix-gcc-libstdc++' }}
-      name: install
-      run: |-
+      run: |+
         sudo apt update
         sudo apt install -y g++-14
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-    - if: ${{ matrix.preset == 'win64-gcc-libstdc++' }}
-      name: install
-      run: |-
+
+    - shell: pwsh
+      if: ${{ matrix.preset == 'win64-gcc-libstdc++' }}
+      run: |+
         choco install mingw --version=14.2.0 -y
         echo "C:\ProgramData\mingw64\mingw64\bin" >> $env:GITHUB_PATH
-      shell: pwsh
+
     - uses: ilammy/msvc-dev-cmd@v1
       if: ${{ matrix.preset == 'win64-msvc-msvcstl' }}
     - name: Build
