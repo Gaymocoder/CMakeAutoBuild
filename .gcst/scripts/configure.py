@@ -6,6 +6,12 @@ from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString as lss
 
 yaml = YAML()
+PREFIX = " |GCST| "
+def gcstout(*args, **kwargs):
+    pref = PREFIX
+    if len(args) != 0:
+        pref += "--"
+    print(pref, *args, **kwargs)
 
 HERE = Path(__file__).resolve().parent
 GCST_DIR = HERE.parent
@@ -23,11 +29,11 @@ CMAKE_PRESETS = {
 }
 
 def run_from_file(script_name):
-    script_path = os.path.join(ROOT, ".github", "workflows", "scripts", script_name)
+    script_path = ROOT/".github"/"workflows"/"scripts"/script_name
     if os.path.exists(script_path):
         with open(script_path, 'r', encoding = 'utf-8') as script:
             return script.read() + "\n\n"
-    print("No script with name '{script_name}' was found in '.github/workflows/scripts/'")
+    gcstout(f"No script with name \"{script_name}\" was found in \".github/workflows/scripts/'\"")
     return ''
 
 
@@ -72,7 +78,69 @@ def githubci_preset_process(key, preset, out_steps, out_matrix):
     out_steps.extend(preset_steps)
 
 
+def presets_read(presets_file, local_presets_file):
+    gcstout(f"Reading presets from basic JSON: \"{presets_file.relative_to(ROOT)}\"")
+    with open(presets_file, "r", encoding = "utf-8") as f:
+        presets = json.load(f)
+
+    service = list(key for key in presets if key.startswith("."))
+    if len(service) > 0:
+        gcstout(f"-- Service elements found:")
+        for element in service:
+            gcstout(f"-- -- {element}")
+    if len(presets.keys()) > len(service):
+        gcstout(f"-- Presets found:")
+        for element in presets:
+            if not element.startswith('.'):
+                gcstout(f"-- -- {element}")
+
+    if not local_presets_file.exists():
+        return presets
+
+    gcstout(f"Overriding JSON has been found")
+    gcstout(f"Reading presets from overriding JSON: \"{local_presets_file.relative_to(ROOT)}\"")
+    with open(local_presets_file, "r", encoding = "utf-8") as f:
+        local_presets = json.load(f)
+    service = list(key for key in presets if key.startswith("."))
+
+    for key in local_presets:
+        value = local_presets[key]
+
+        if key == ".import":
+            if (type(value) != list):
+                gcstout(f"-- WARN: \".import\"-key contains invalid data (list only allowed)")
+                continue
+            gcstout(f"-- Imported presets from basic JSON:")
+            presets = {key: presets[key] for key in (service + value)}
+            for key in presets:
+                gcstout(f"-- -- {key}")
+            continue
+
+        if key == ".remove":
+            if value == "*":
+                gcstout(f"-- Removed all presets from basic JSON")
+                presets = {key: presets[key] for key in service}
+                continue
+
+            gcstout(f"-- Removed presets from basic JSON:")
+            for preset_name in local_presets[key]:
+                gcstout(f"-- -- {preset_name}")
+                del presets[preset_name]
+            continue
+
+        if key in presets:
+            gcstout(f"-- Overrided preset \"{key}\"")
+        else:
+            gcstout(f"-- Added preset \"{key}\"")
+        presets[key] = local_presets[key]
+
+    gcstout(f"Found {len(presets) - len(service)} presets")
+    return presets
+
+
 def presets_extract(presets, cmake_out, conan_out, out_ghci_steps, out_ghci_matrix):
+    gcstout()
+    gcstout("Extracting CMake, conan and GitHub CI profiles from detected presets:")
     for key in presets:
         if key in [".common-pre", ".common-post"]:
             continue
@@ -80,27 +148,38 @@ def presets_extract(presets, cmake_out, conan_out, out_ghci_steps, out_ghci_matr
         cmake_preset_process(key, preset, cmake_out)
         conan_preset_process(key, preset, conan_out)
         githubci_preset_process(key, preset, out_ghci_steps, out_ghci_matrix)
+        gcstout(f"-- {key}")
 
 
 def presets_write(cmake_presets, conan_profiles, github_ci):
-    with open(os.path.join(ROOT, 'CMakePresets.json'), 'w', encoding = 'utf-8') as f:
+    cmake_presets_file = ROOT/'CMakePresets.json'
+    gcstout()
+    gcstout(f"Saved CMake presets into \"{cmake_presets_file.relative_to(ROOT)}\"")
+    with open(cmake_presets_file, 'w', encoding = 'utf-8') as f:
         json.dump(cmake_presets, f, indent = 4)
 
-    profile_dir = os.path.join(ROOT, 'conan', 'profiles')
-    shutil.rmtree(profile_dir, ignore_errors = True)
-    os.makedirs(profile_dir, exist_ok = True)
-    for key in conan_profiles:    
-        profile_path = os.path.join(profile_dir, key)
+    conan_profiles_dir = ROOT/'conan'/'profiles'
+    gcstout(f"Saved conan profiles:")
+    shutil.rmtree(conan_profiles_dir, ignore_errors = True)
+    os.makedirs(conan_profiles_dir, exist_ok = True)
+    for key in conan_profiles:
+        profile_path = conan_profiles_dir/key
+        gcstout(f"-- ./{profile_path.relative_to(ROOT)}")
         with open(profile_path, 'w', encoding = 'utf-8') as f:
             f.write(conan_profiles[key])
 
-    with open(os.path.join(ROOT, ".github", "workflows", "ci.yml"), "w", encoding = "utf-8") as f:
+    github_ci_file = ROOT/".github"/"workflows"/"ci.yml"
+    with open(github_ci_file, "w", encoding = "utf-8") as f:
         yaml.dump(github_ci, f)
+    gcstout(f"Saved GitHub CI workflows into \"{github_ci_file.relative_to(ROOT)}\"")
 
 
 def main():
-    with open(os.path.join(GCST_DIR, "presets.json"), "r", encoding = "utf-8") as f:
-        presets = json.load(f)
+    print(" ========================> GCST_TEMPLATE_CONFIGURE <========================")
+    presets_file = GCST_DIR/"presets.json"
+    presets_local_file = ROOT/"presets.local.json"
+
+    presets = presets_read(presets_file, presets_local_file)
     with open(os.path.join(ROOT, ".github", "workflows", "ci.yml"), "r", encoding = "utf-8") as f:
         github_ci = yaml.load(f)
 
@@ -113,6 +192,9 @@ def main():
     steps.extend(presets[".common-post"])
 
     presets_write(CMAKE_PRESETS, CONAN_PROFILES, github_ci)
+    gcstout()
+    gcstout("Configuring done.")
+    print(" ===========================================================================")
 
 if __name__ == '__main__':
     main()

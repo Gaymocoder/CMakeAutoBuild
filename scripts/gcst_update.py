@@ -21,8 +21,6 @@ install_only = [
     "./CMakeLists.txt",
 ]
 
-# ToDo: presets.local.json
-
 def get_updating_files():
     all_files = []
     files_to_update = install_and_update + install_only
